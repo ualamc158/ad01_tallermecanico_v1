@@ -1,87 +1,189 @@
 # Tarea: Taller mecánico
-## Profesor: José Ramón Jiménez Reyes
+## Profesor: Andrés Rubio del Río
 ## Alumno:
 
-Al cliente le ha gustado bastante la aplicación, pero nos comenta algunas mejoras que necesita la anterior versión y nuevas funcionalidades que le gustaría que tuviese. Todo ello lo abordaremos en este **tercer sprint**.
+Nuestro cliente está tan encantado con todo el trabajo realizado en las fases anteriores del proyecto del taller mecánico. Sin embargo, quiere dar un paso más en dicho proyecto para lo cual que nos pide que añadamos persistencia a los datos pero sin necesidad de tener una base de datos. Aunque es consciente que esa es la mejor opción, nos pide que en este spring se añada persistencia a los datos pero utilizando ficheros JSON.
 
-Nos comenta que necesita que añadamos persistencia de datos, ya que tal y como está ahora la aplicación no es funcional. 
+Al analizar cómo llevaremos a cabo la persistencia, se pide que los datos deben estar actualizados en los ficheros correspondientes en tiempo real. Para ello, al proyecto se añadirá un nuevo paquete ficheros con todo lo necesario para lograr dicha persistencia.
 
-También nos comenta que le gustaría que los listados se mostrasen ordenados de la siguiente forma:
-- **Clientes**: Ordenados por nombre y DNI.
-- **Vehículos**: Ordenados por marca, modelo y matrícula.
-- **Trabajos**: Ordenados por fecha de inicio y por cliente (nombre y DNI).
+En el repositorio puedes encontrar un proyecto gradle con las dependencias necesarias del proyecto y con el punto de partida para este spring.
 
-También nos comenta que le gustaría poder mostrar estadísticas mensuales indicando el número de tipos de trabajos realizados en dicho més.
+Para abordar dicho spring te muestro el diagrama de clases (en el que cuando se expresa cardinalidad * queremos expresar que se hará uso de listas) para el mismo y poco a poco te iré explicando los diferentes pasos a realizar:
 
-Por tanto, en este **tercer sprint** añadiremos **persistencia** a los datos utilizando para ello **ficheros XML**, para lo que sustituiremos el modelo que teníamos de memoria, por un modelo de ficheros. **Ordenaremos los listados** al mostrarlos y permitiremos mostrar **estadísticas mensuales por tipo de vehículo**.
-
-Al **analizar** cómo llevaremos a cabo la **persistencia**, hemos decidido leer los ficheros al arrancar la aplicación, gestionarlos en memoria y almacenarlos en los mismos ficheros al cerrar la aplicación. Cada clase de la implementación de la capa ficheros leerá su fichero y lo almacenará en una lista tal y como se hacía en la versión de memoria. Pero con esto nos surge algún que otro problema:
-- Los trabajos guardan una referencia del cliente y del vehículo, pero dicha clase no es capaz de comunicarse con las otras para poder buscar dichas referencias. Para solucionar este problema vamos a utilizar el **patrón singlenton**, con lo que solo podremos tener una única instancia de cada clase de la capa de ficheros. Con esto
-conseguimos que no haya más de una instancia que pueda leer el fichero y posteriormente modificarlo, por lo que podremos acceder sin problemas desde los trabajos a los clientes y a los vehículos para buscar las referencias.
-- Pero esto acarrea otro problema y es que estamos exponiendo dichas instancias a toda la aplicación, lo que podría permitir que desde cualquier lugar se pueda acceder a las mismas provocando efectos indeseados y rompiendo con el principio de ocultación de la información. Para solucionarlo jugaremos con las visibilidades. Haremos que los métodos que nos devuelven la instancia de cada clase (`getInstancia`) tengan una **visibilidad de paquete**, con lo que solo podremos acceder a ellas desde el paquete ficheros. 
-
-En este repositorio hay un esqueleto de proyecto **gradle** con las dependencias necesarias del proyecto y que, en la rama `ficherosXML`, ya lleva incluidos todos los test necesarios que el modelo debe pasar, con todo lo que hemos comentado.
-
-Para ello te muestro un diagrama de clases (en el que cuando se expresa cardinalidad `*` queremos expresar que se hará uso de **listas**) para el mismo y poco a poco te iré explicando los diferentes pasos a realizar:
-
-![Diagrama de clases de la tarea](src/main/resources/uml/tallerMecanico.jpg)
+![Diagrama de clases de la tarea](src\main\resources\uml\tallerMecanico.png)
 
 
 #### Primeros Pasos
-1. Lo primero que debes hacer es mezclar tu rama `refactorizacion_herencia` con la rama `master` y crear un nueva rama etiquetada como `ficheros` a partir de ella.
-2. Añade el remote de mi repositorio (si aún no lo tenías añadido) y haz un `pull` del mismo de la rama `master`.
-3. Cámbiate a la rama `ficheros` y haz otro pull de mi remote de la misma rama.
-4. Modifica el archivo `README.md` para que incluya tu nombre en el apartado "Alumno".
-5. Haz que al controlador se le pasen las distintas fábricas (modelo, fuente de datos y vista) y sea él el que cree los objetos. Realiza tu **primer commit**.
+1. Modifica el archivo `README.md` para que incluya tu nombre en el apartado "Alumno".
+2. Realiza tu primer commit.
 
-#### Generación de las estadísticas
-1. Crea el enumerado `TipoTrabajo` tal y como se indica en el diagrama de clases.
-2. Añade el método `getEstadisticasMensuales`a la clase `Trabajos` e impleméntalo adecuadamente (utiliza el método `inicializarEstadisticas` para hacerlo más sencillo).
-3. Añádelos a la interfaz `ITrabajos`, al modelo y a la interfaz del modelo.
-4. Añade un nuevo evento para permitir ejecutar esta opción.
-5. Añade a la vista el método para leer el mes y también a la interfaz.
-6. Añade a la vista el método para mostrar las estadísticas y también a la interfaz.
-7. Haz que el controlador tenga en cuenta este evento y actúe en ctmecuencia. Realiza un **commit**.
+#### Paquete dominio
+1. Modifica la clase `Trabajo` para que los atributos `LocalDate` puedan ser guardados y leídos correctamente cuando se trabaja con ficheros JSON. Para ello deberás usar la notación `@JsonFormat(pattern = "yyyy-MM-dd")`.
+2. Modifica la clase `Trabajo` para que automatice la serialización/deserialización de los objetos de tipo **Mecánico** o de tipo **Revisión**. Para ello deberás usar las anotaciones mostradas a continuación. Mediante estas anotaciones se indica en una pareja clave-valor, cual es el tipo de trabajo.
+   `@JsonTypeInfo(
+   use = JsonTypeInfo.Id.NAME,
+   include = JsonTypeInfo.As.PROPERTY,
+   property = "XXXX"
+   )`
+   debiendo reemplazar XXXX por el nombre que se le quiera dar a la clave.
+   
+   `@JsonSubTypes({
+   @JsonSubTypes.Type(value = YYYYY.class, name = "AAAAA"),
+   @JsonSubTypes.Type(value = ZZZZZ.class, name = "BBBBB")
+   })`
+   debiendo reemplazar **YYYYY** y **ZZZZZ** por las clases hijas, y **AAAAA** y **BBBBB** por el valor que tendrá la clave **XXXXX**.
+3. Modifica la clase `Trabajo` para que los métodos abstractos o aquellos que se vean afectados por hacer uso de los mismos, sean marcados como **Ignore**. Para ello debes usar la notación `@JsonIgnore`.
+4. Realiza un **commit**
 
-#### Ordenación de los listados
-1. Haz que a la hora de mostrar los clientes se muestren ordenados tal y como indica el enunciado.
-2. Haz lo mismo para los vehículos.
-3. Haz lo mismo para los trabajos. Realiza un **commit**.
+#### Paquete ficheros
+1. Crea un nuevo paquete en la capa `negocio` llamado `json`.
+2. Crea la clase `FuenteDatosFicherosJSON` que deberá implementar la interfaz `IFuenteDatos`, tal y como se indica en el diagrama. Esta clase será la encargada de implementar el **patrón fábrica**, devolviendo en cada caso el resultado de crear la clase que hace referencia a su nombre:
+   2.1. Método `crearClientes` devolverá una instancia de tipo `Clientes` del paquete `ficheros`.
+   2.2. Método `crearVehiculos` devolverá una instancia de tipo Vehiculos del paquete `ficheros`.
+   2.3. Método `crearTrabajos` devolverá una instancia de tipo Trabajos del paquete `ficheros`.
+   2.4. Realiza un **commit**.
+3. Crea la clase `Clientes`, que tendrá en el atributo `FICHERO_CLIENTES` la ruta donde se encuentra el fichero donde leer y escribir los datos de los clientes. Dicha ruta, situada en la carpeta raíz del proyecto será `datos/ficheros/json/clientes.json` y su estructura será la siguiente:
+    ~~~json
+   [ {
+      "nombre" : "Bob Esponja",
+      "dni" : "11223344B",
+      "telefono" : "950112233"
+      }, {
+      "nombre" : "Patricio Estrella",
+      "dni" : "11111111H",
+      "telefono" : "950111111"
+      }, {
+      "nombre" : "Chase",
+      "dni" : "75723203G",
+      "telefono" : "950121212"
+      } ]
+   ~~~
 
-#### Persistencia en ficheros XML
-1. Refactoriza la fuente de datos `MEMORIA` para que pase a llamarse `FICHEROS` (refactoriza lo que creas necesario también).
-2. Añade los métodos `comenzar` y `terminar` en las interfaces de la fuente de datos.
-3. Implementa el **patrón Singleton** en las clases `Clientes`, `Vehiculos` y `Trabajos`.
-4. Implementa los métodos `comenzar` y `terminar` para la clase `Clientes` del paquete `ficheros` para que al comenzar lea el fichero XML de vehículos, lo almacene en una lista y al terminar lo vuelva a almacenar en dicho fichero. El fichero se debe llamar `clientes.xml` y debes utilizar **rutas relativas** para trabajar con él. Debes implementar los métodos que se especifican en el diagrama y que son autoexplicativos. La estructura del fichero será la siguiente:
-    ~~~xml
-    <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-    <clientes>
-        <cliente dni="11223344B" nombre="Bob Esponja" telefono="950112233"/>
-        <cliente dni="11111111H" nombre="Patricio Estrella" telefono="950111111"/>
-    </clientes>
-    ~~~
-5. Implementa los métodos `comenzar` y `terminar` para la clase `Vehiculos` del paquete `ficheros` para que al comenzar lea el fichero XML de vehículos, lo almacene en una lista y al terminar lo vuelva a almacenar en dicho fichero. El fichero se debe llamar `vehiculos.xml` y debes utilizar **rutas relativas** para trabajar con él. Debes implementar los métodos que se especifican en el diagrama y que son autoexplicativos. La estructura del fichero será la siguiente:
-    ~~~xml
-    <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-    <vehiculos>
-        <vehiculo marca="Scania" matricula="1234BCD" modelo="Citywide"/>
-        <vehiculo marca="Seat" matricula="1111BBB" modelo="León"/>
-        <vehiculo marca="Renault" matricula="2222CCC" modelo="Megane"/>
-        <vehiculo marca="Mercedes-Benz" matricula="3333DDD" modelo="eSprinter"/>
-    </vehiculos>
-    ~~~
-6. Implementa los métodos `comenzar` y `terminar` para la clase `Trabajos` del paquete `ficheros` para que al comenzar lea el fichero XML de vehículos, lo almacene en una lista y al terminar lo vuelva a almacenar en dicho fichero. El fichero se debe llamar `trabajos.xml` y debes utilizar **rutas relativas** para trabajar con él. Debes implementar los métodos que se especifican en el diagrama y que son autoexplicativos. La estructura del fichero será la siguiente:
-    ~~~xml
-    <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-    <trabajos>
-        <trabajo cliente="11223344B" fechaFin="07/03/2024" fechaInicio="01/03/2024" horas="10" tipo="revision" vehiculo="3333DDD"/>
-        <trabajo cliente="11111111H" fechaFin="14/03/2024" fechaInicio="10/03/2024" tipo="revision" vehiculo="1111BBB"/>
-        <trabajo cliente="11223344B" fechaFin="16/03/2024" fechaInicio="10/03/2024" horas="5" tipo="mecanico" vehiculo="1234BCD"/>
-        <trabajo cliente="11111111H" fechaInicio="15/03/2024" precioMaterial="125.500000" tipo="mecanico" vehiculo="2222CCC"/>
-    </trabajos>
-    ~~~
-7. Comprueba que todo funciona correctamente y que pasa todos los test. Realiza un **commit** y seguidamente realiza el **push** a tu repositorio remoto.
+      Por otro lado, para el correcto funcionamiento de la clase, crea los atributos y añade los métodos indicados a continuación:
 
+      1. Crea el atributo `instancia` para aplicar el **patrón singleton**.
+      2. Crea el atributo `mapper` para mapear los datos existentes en el fichero `clientes.json`.
+      3. El método `getInstancia` para aplicar el **patrón singleton** a la clase.
+      4. El Método `comenzar`que deberá estar vacío ya que los datos se leerán cuando los solicite el usuario.
+      5. El Método `terminar` que deberá estar vacío ya que los datos se escribirán cada vez que haya alguna modificación.
+      6. El Método `leer` que deberá leer cada uno de los clientes almacenados en el fichero JSON, devolviendo una lista formada por dichos clientes.
+      7. El Método `escribir` que escribe en el fichero JSON cada uno de los clientes existentes en la lista recibida como parámetro.
+      8. El Método `get` que devuelve una lista de los clientes existentes en el fichero JSON correspondiente.
+      9. El Método `insertar` que deberá añadir un nuevo cliente al fichero JSON correspondiente.
+      10. El Método `modificar` que actualizará el nombre y/o teléfono del cliente recibido como parámetro en el fichero JSON correspondiente.
+      11. El Método `buscar` que deberá devolver el resultado de encontrar en el fichero JSON correspondiente al cliente pasado como parámetro.
+      12. El Método `borrar` que deberá eliminar del fichero JSON correspondiente al cliente pasado como parámetro.
+      13. Realiza un **commit**.
+   
+
+4. Crea la clase `Vehiculos`, que tendrá en el atributo `FICHERO_VEHICULOS` la ruta donde se encuentra el fichero donde leer y escribir los datos de los vehículos. Dicha ruta, situada en la carpeta raíz del proyecto será `datos/ficheros/json/vehiculos.json` y su estructura será la siguiente:
+    ~~~json
+      [ {
+      "marca" : "Scania",
+      "modelo" : "Citywide",
+      "matricula" : "1234BCD"
+      }, {
+      "marca" : "Seat",
+      "modelo" : "León",
+      "matricula" : "1111BBB"
+      }, {
+      "marca" : "Renault",
+      "modelo" : "Megane",
+      "matricula" : "2222CCC"
+      }, {
+      "marca" : "Mercedes-Benz",
+      "modelo" : "eSprinter",
+      "matricula" : "3333DDD"
+      }, {
+      "marca" : "Seat",
+      "modelo" : "León",
+      "matricula" : "9999ZZZ"
+      } ]
+   ~~~
+   Por otro lado, para el correcto funcionamiento de la clase, crea los atributos y añade los métodos indicados a continuación:
+
+   1. Crea el atributo `instancia` para aplicar el **patrón singleton**.
+   2. Crea el atributo `mapper` para mapear los datos existentes en el fichero `vehiculos.json`.
+   3. El método `getInstancia` para aplicar el **patrón singleton** a la clase.
+   4. El Método `comenzar`que deberá estar vacío ya que los datos se leerán cuando los solicite el usuario.
+   5. El Método `terminar` que deberá estar vacío ya que los datos se escribirán cada vez que haya alguna modificación.
+   6. El Método `leer` que deberá leer cada uno de los vehículos almacenados en el fichero JSON, devolviendo una lista formada por dichos vehículos.
+   7. El Método `escribir` que escribe en el fichero JSON cada uno de los vehículos existentes en la lista recibida como parámetro.
+   8. El Método `get` que devuelve una lista de los vehículos existentes en el fichero JSON correspondiente.
+   9. El Método `insertar` que deberá añadir un nuevo vehículo al fichero JSON correspondiente.
+   10. El Método `buscar` que deberá devolver el resultado de encontrar en el fichero JSON correspondiente al vehículo pasado como parámetro.
+   11. El Método `borrar` que deberá eliminar del fichero JSON correspondiente al vehículo pasado como parámetro.
+   12. Realiza un **commit**.
+   
+
+5. Crea la clase `Trabajos`, que tendrá en el atributo `FICHERO_TRABAJOS` la ruta donde se encuentra el fichero donde leer y escribir los datos de los trabajos. Dicha ruta, situada en la carpeta raíz del proyecto será `datos/ficheros/json/trabajos.json` y su estructura será la siguiente:
+~~~json
+   [ {
+   "tipo" : "Revision",
+   "cliente" : {
+   "nombre" : "Patricio Estrella",
+   "dni" : "11111111H",
+   "telefono" : "950111111"
+   },
+   "vehiculo" : {
+   "marca" : "Seat",
+   "modelo" : "León",
+   "matricula" : "1111BBB"
+   },
+   "fechaInicio" : "2025-11-01",
+   "horas" : 24
+   }, {
+   "tipo" : "Mecanico",
+   "cliente" : {
+   "nombre" : "Chase",
+   "dni" : "75723203G",
+   "telefono" : "950121212"
+   },
+   "vehiculo" : {
+   "marca" : "Renault",
+   "modelo" : "Megane",
+   "matricula" : "2222CCC"
+   },
+   "fechaInicio" : "2025-10-30",
+   "fechaFin" : "2025-11-02",
+   "horas" : 11,
+   "precioMaterial" : 12.0
+   }, {
+   "tipo" : "Mecanico",
+   "cliente" : {
+   "nombre" : "Chase",
+   "dni" : "75723203G",
+   "telefono" : "950121212"
+   },
+   "vehiculo" : {
+   "marca" : "Mercedes-Benz",
+   "modelo" : "eSprinter",
+   "matricula" : "3333DDD"
+   },
+   "fechaInicio" : "2025-11-02"
+   } ]
+~~~
+   Por otro lado, para el correcto funcionamiento de la clase, crea los atributos y añade los métodos indicados a continuación:
+   1. Crea el atributo `instancia` para aplicar el **patrón singleton**.
+   2. Crea el atributo `mapper` para mapear los datos existentes en el fichero `trabajos.json`.
+   3. El método `getInstancia` para aplicar el **patrón singleton** a la clase.
+   4. El Método `comenzar`que deberá estar vacío ya que los datos se leerán cuando los solicite el usuario.
+   5. El Método `terminar` que deberá estar vacío ya que los datos se escribirán cada vez que haya alguna modificación.
+   6. El Método `leer` que deberá leer cada uno de los trabajos almacenados en el fichero JSON, devolviendo una lista formada por dichos trabajos.
+   7. El Método `escribir` que escribe en el fichero JSON cada uno de los trabajos existentes en la lista recibida como parámetro.
+   8. El Método `get` que devuelve una lista de los trabajos existentes en el fichero JSON correspondiente.
+   9. El Método `insertar` que deberá añadir un nuevo trabajo al fichero JSON correspondiente.
+   10. El Método `buscar` que deberá devolver el resultado de encontrar en el fichero JSON correspondiente al trabajo pasado como parámetro.
+   11. El Método `borrar` que deberá eliminar del fichero JSON correspondiente al trabajo pasado como parámetro.
+   12. Realiza un **commit**.
+#### Paquete modelo
+1. Actualiza la clase `FactoriaFuenteDatos` para que contemple la opción de ficheros JSON. Este enumerado implementa el **patrón método de fabricación** para la fuente de datos que se va a tener: `FICHEROS_JSON`.
+2. Realiza un **commit**.
+
+#### Main
+1. Modifica el método `procesarArgumentosFuenteDatos` que creará un modelo cuya fuente de datos será la que se indique a través de los parámetros de la aplicación. Si el parámetro es `-fdficherosjson`, se creará un modelo cuya fuente de datos será de tipo `FICHEROS_JSON`. En caso de no indicar ninguna fuente de datos, por defecto, se considerará que se operará sobre ficheros JSON.
+2. Realiza el **commit** correspondiente.
+3. Finalmente, realiza el **push** hacia tu repositorio remoto en GitHub.
 
 #### Se valorará:
 
