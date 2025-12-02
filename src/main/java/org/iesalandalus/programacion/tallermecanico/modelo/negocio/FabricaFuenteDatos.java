@@ -1,6 +1,6 @@
 package org.iesalandalus.programacion.tallermecanico.modelo.negocio;
 
-import org.iesalandalus.programacion.tallermecanico.modelo.negocio.ficheros.xml.FuenteDatosFicherosXML;
+import org.iesalandalus.programacion.tallermecanico.modelo.negocio.ficheros.FuenteDatosFicherosXML;
 
 
 public enum FabricaFuenteDatos {
