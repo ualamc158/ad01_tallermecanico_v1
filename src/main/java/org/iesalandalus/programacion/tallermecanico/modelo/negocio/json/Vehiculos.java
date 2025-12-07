@@ -20,15 +20,6 @@ public class Vehiculos implements IVehiculos {
     private static ObjectMapper mapper;
     private static Vehiculos instancia;
 
-    private Vehiculos(){
-        mapper = new ObjectMapper();
-        File fichero = new File(FICHERO_VEHICULOS);
-        File carpeta = fichero.getParentFile();
-        if (carpeta != null && !carpeta.exists()) {
-            carpeta.mkdirs();
-        }
-    }
-
     static Vehiculos getInstancia() {
         if (instancia == null) {
             instancia = new Vehiculos();

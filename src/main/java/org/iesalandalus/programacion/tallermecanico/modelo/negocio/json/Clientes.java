@@ -20,8 +20,8 @@ public class Clientes implements IClientes {
     private static ObjectMapper mapper;
     private static Clientes instancia;
 
-    private Clientes() {
-         mapper = new ObjectMapper();
+    private Clientes (){
+        ObjectMapper mapper = new ObjectMapper();
 
         File fichero = new File(FICHERO_CLIENTES);
         File carpeta = fichero.getParentFile();
@@ -52,8 +52,7 @@ public class Clientes implements IClientes {
         }
 
         try {
-            clientes = mapper.readValue(fichero, new TypeReference<List<Cliente>>() {
-            });
+            clientes = mapper.readValue(fichero, new TypeReference<List<Cliente>>() {});
 
         } catch (StreamReadException e) {
             System.out.println("Error leyendo el flujo de datos JSON: " + e.getMessage());
