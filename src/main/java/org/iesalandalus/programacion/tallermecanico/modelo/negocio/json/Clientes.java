@@ -21,7 +21,7 @@ public class Clientes implements IClientes {
     private static Clientes instancia;
 
     private Clientes (){
-        ObjectMapper mapper = new ObjectMapper();
+        mapper = new ObjectMapper();
 
         File fichero = new File(FICHERO_CLIENTES);
         File carpeta = fichero.getParentFile();
