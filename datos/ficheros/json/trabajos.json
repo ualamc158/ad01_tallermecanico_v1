@@ -30,6 +30,21 @@
   "horas" : 11,
   "precioMaterial" : 12.0
 }, {
+  "tipo" : "Revision",
+  "cliente" : {
+    "nombre" : "Mian",
+    "dni" : "87654321X",
+    "telefono" : "222222222"
+  },
+  "vehiculo" : {
+    "marca" : "Ford",
+    "modelo" : "Mondeo",
+    "matricula" : "2446GRD"
+  },
+  "fechaInicio" : "2025-12-09",
+  "fechaFin" : "2025-12-09",
+  "horas" : 67
+}, {
   "tipo" : "Mecanico",
   "cliente" : {
     "nombre" : "Juan Carlos",
@@ -43,21 +58,6 @@
   },
   "fechaInicio" : "2025-12-03",
   "fechaFin" : null,
-  "horas" : 0,
-  "precioMaterial" : 0.0
-}, {
-  "tipo" : "Revision",
-  "cliente" : {
-    "nombre" : "Mian",
-    "dni" : "87654321X",
-    "telefono" : "222222222"
-  },
-  "vehiculo" : {
-    "marca" : "Ford",
-    "modelo" : "Mondeo",
-    "matricula" : "2446GRD"
-  },
-  "fechaInicio" : "2025-12-09",
-  "fechaFin" : null,
-  "horas" : 0
+  "horas" : 28,
+  "precioMaterial" : 2000.0
 } ]
