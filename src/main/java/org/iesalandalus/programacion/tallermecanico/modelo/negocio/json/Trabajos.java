@@ -19,10 +19,11 @@ import java.util.*;
 public class Trabajos implements ITrabajos {
     private static final String FICHERO_TRABAJOS = "datos/ficheros/json/trabajos.json";
     private static ObjectMapper mapper;
-    private static final TypeReference<List<Trabajo>> TYPE_LIST_TRABAJO = new TypeReference<>() {};
+    private static final TypeReference<List<Trabajo>> TYPE_LIST_TRABAJO = new TypeReference<>() {
+    };
     private static Trabajos instancia;
 
-    private Trabajos(){
+    private Trabajos() {
         mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
@@ -51,7 +52,7 @@ public class Trabajos implements ITrabajos {
 
     }
 
-    public List<Trabajo> leer(){
+    public List<Trabajo> leer() {
         File fichero = new File(FICHERO_TRABAJOS);
         List<Trabajo> trabajos = new ArrayList<>();
 
@@ -78,7 +79,7 @@ public class Trabajos implements ITrabajos {
         File fichero = new File(FICHERO_TRABAJOS);
 
         try {
-            mapper.writerWithDefaultPrettyPrinter().writeValue(fichero, trabajos);
+            mapper.writerFor(TYPE_LIST_TRABAJO).withDefaultPrettyPrinter().writeValue(fichero, trabajos);
         } catch (StreamWriteException e) {
             System.out.println("Error al escribir el flujo de datos JSON: " + e.getMessage());
         } catch (DatabindException e) {
@@ -134,7 +135,7 @@ public class Trabajos implements ITrabajos {
         return estadisticas;
     }
 
-    private Map<TipoTrabajo, Integer> inicializarEstadisticas(){
+    private Map<TipoTrabajo, Integer> inicializarEstadisticas() {
         Map<TipoTrabajo, Integer> estadisticas = new EnumMap<>(TipoTrabajo.class);
         for (TipoTrabajo tipoTrabajo : TipoTrabajo.values()) {
             estadisticas.put(tipoTrabajo, 0);
