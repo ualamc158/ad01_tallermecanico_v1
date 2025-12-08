@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Clientes implements IClientes {
 
@@ -42,6 +43,11 @@ public class Clientes implements IClientes {
 
     }
 
+    @Override
+    public void terminar() {
+
+    }
+
     public List<Cliente> leer() {
         File fichero = new File(FICHERO_CLIENTES);
         List<Cliente> clientes = new ArrayList<>();
@@ -65,13 +71,8 @@ public class Clientes implements IClientes {
         return clientes;
     }
 
-
-    @Override
-    public void terminar() {
-
-    }
-
     public void escribir(List<Cliente> clientes) {
+        Objects.requireNonNull(clientes, "La lista de clientes a escribir no puede ser nula.");
         File fichero = new File(FICHERO_CLIENTES);
 
         // Aseguramos que el directorio exista antes de escribir

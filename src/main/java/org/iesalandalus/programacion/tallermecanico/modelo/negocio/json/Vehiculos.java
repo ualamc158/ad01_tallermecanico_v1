@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Vehiculos implements IVehiculos {
     private static final String FICHERO_VEHICULOS = "datos/ficheros/json/vehiculos.json";
@@ -72,6 +73,7 @@ public class Vehiculos implements IVehiculos {
     }
 
     public void escribir(List<Vehiculo> vehiculos) {
+        Objects.requireNonNull(vehiculos, "La lista de vehículos a escribir no puede ser nula.");
         File fichero = new File(FICHERO_VEHICULOS);
 
         // Aseguramos que el directorio exista antes de escribir
