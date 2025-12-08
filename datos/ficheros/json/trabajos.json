@@ -1,15 +1,15 @@
 [ {
   "cliente" : {
-    "nombre" : "Juan Carlos",
-    "dni" : "12345678Z",
-    "telefono" : "111111111"
+    "nombre" : "Mian",
+    "dni" : "87654321X",
+    "telefono" : "222222222"
   },
   "vehiculo" : {
-    "marca" : "Ferrari",
-    "modelo" : "Testarossa",
-    "matricula" : "5678FGH"
+    "marca" : "Ford",
+    "modelo" : "Mondeo",
+    "matricula" : "2446GRD"
   },
-  "fechaInicio" : "2025-12-04",
+  "fechaInicio" : "2025-12-03",
   "fechaFin" : null,
   "horas" : 0
 } ]
