@@ -18,4 +18,12 @@
   "marca" : "Seat",
   "modelo" : "León",
   "matricula" : "9999ZZZ"
+}, {
+  "marca" : "Ford",
+  "modelo" : "Mondeo",
+  "matricula" : "2446GRD"
+}, {
+  "marca" : "Ferrari",
+  "modelo" : "Testarossa",
+  "matricula" : "5678FGH"
 } ]
