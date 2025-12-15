@@ -17,6 +17,7 @@ public class Main {
     private static Pair<FabricaVista, FabricaFuenteDatos> procesarArgumentos(String[] args) {
         FabricaVista fabricaVista = FabricaVista.VENTANAS;
 
+        // Por defecto, JSON.
         FabricaFuenteDatos fabricaFuenteDatos = FabricaFuenteDatos.FICHEROS_JSON;
 
         for (String argumento : args) {
@@ -28,6 +29,8 @@ public class Main {
                 fabricaFuenteDatos = FabricaFuenteDatos.FICHEROS_XML;
             } else if (argumento.equalsIgnoreCase("-fdficherosjson")) {
                 fabricaFuenteDatos = FabricaFuenteDatos.FICHEROS_JSON;
+            } else if (argumento.equalsIgnoreCase("-fdmysql")) {
+                fabricaFuenteDatos = FabricaFuenteDatos.MYSQL;
             }
         }
         return new Pair<>(fabricaVista, fabricaFuenteDatos);
