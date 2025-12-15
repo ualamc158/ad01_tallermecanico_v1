@@ -15,13 +15,11 @@ public class Clientes implements IClientes {
 
     // Ajusta la URL si tu base de datos tiene otro nombre.
     // Usamos 'amcciclista' que es la contraseña que usaste en tu comando Docker.
-// Cambia la línea de la URL por esta:
     private static final String URL = "jdbc:mysql://3.235.161.27:3306/tallermecanico";
     private static final String USER = "root";
     private static final String PASS = "amcciclista";
 
     private Clientes() {
-        // Constructor privado
     }
 
     public static Clientes getInstancia() {

@@ -13,7 +13,6 @@ public class Vehiculos implements IVehiculos {
     private static Vehiculos instancia;
     private Connection conexion;
 
-    // Cambia la línea de la URL por esta:
     private static final String URL = "jdbc:mysql://3.235.161.27:3306/tallermecanico";
     private static final String USER = "root";
     private static final String PASS = "amcciclista";
@@ -67,7 +66,6 @@ public class Vehiculos implements IVehiculos {
 
         String sql = "INSERT INTO vehiculos (marca, modelo, matricula) VALUES (?, ?, ?)";
         try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
-            // CORRECCIÓN: Uso de accesores de record (sin get)
             stmt.setString(1, vehiculo.marca());
             stmt.setString(2, vehiculo.modelo());
             stmt.setString(3, vehiculo.matricula());
@@ -85,7 +83,6 @@ public class Vehiculos implements IVehiculos {
 
         String sql = "SELECT marca, modelo, matricula FROM vehiculos WHERE matricula = ?";
         try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
-            // CORRECCIÓN: Uso de accesor de record (sin get)
             stmt.setString(1, vehiculo.matricula());
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) return new Vehiculo(rs.getString("marca"), rs.getString("modelo"), rs.getString("matricula"));
@@ -102,7 +99,6 @@ public class Vehiculos implements IVehiculos {
 
         String sqlCheck = "SELECT count(*) FROM trabajos WHERE vehiculo_matricula = ?";
         try (PreparedStatement stmt = conexion.prepareStatement(sqlCheck)) {
-            // CORRECCIÓN: Uso de accesor de record (sin get)
             stmt.setString(1, vehiculo.matricula());
             ResultSet rs = stmt.executeQuery();
             if (rs.next() && rs.getInt(1) > 0) {
@@ -114,7 +110,6 @@ public class Vehiculos implements IVehiculos {
 
         String sql = "DELETE FROM vehiculos WHERE matricula = ?";
         try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
-            // CORRECCIÓN: Uso de accesor de record (sin get)
             stmt.setString(1, vehiculo.matricula());
             if (stmt.executeUpdate() == 0) throw new TallerMecanicoExcepcion("El vehículo a borrar no existe.");
         } catch (SQLException e) {
