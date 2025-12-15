@@ -19,7 +19,7 @@ public class Main {
 
         // Por defecto, JSON.
         FabricaFuenteDatos fabricaFuenteDatos = FabricaFuenteDatos.FICHEROS_JSON;
-
+        // Poner     -fdmysql   en los args del main para iniciar la app con la base de datos de Mysql
         for (String argumento : args) {
             if (argumento.equalsIgnoreCase("-vventanas")) {
                 fabricaVista = FabricaVista.VENTANAS;
