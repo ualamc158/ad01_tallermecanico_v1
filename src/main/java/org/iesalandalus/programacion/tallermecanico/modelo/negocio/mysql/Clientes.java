@@ -13,14 +13,7 @@ public class Clientes implements IClientes {
     private static Clientes instancia;
     private Connection conexion;
 
-    // Ajusta la URL si tu base de datos tiene otro nombre.
-    // Usamos 'amcciclista' que es la contraseña que usaste en tu comando Docker.
-    private static final String URL = "jdbc:mysql://3.235.161.27:3306/tallermecanico";
-    private static final String USER = "root";
-    private static final String PASS = "amcciclista";
-
-    private Clientes() {
-    }
+    private Clientes() {}
 
     public static Clientes getInstancia() {
         if (instancia == null) {
@@ -31,26 +24,12 @@ public class Clientes implements IClientes {
 
     @Override
     public void comenzar() {
-        try {
-            if (conexion == null || conexion.isClosed()) {
-                conexion = DriverManager.getConnection(URL, USER, PASS);
-                System.out.println("Conexión MySQL (Clientes) establecida.");
-            }
-        } catch (SQLException e) {
-            System.err.println("Error al conectar MySQL (Clientes): " + e.getMessage());
-        }
+        this.conexion = MySQL.establecerConexion();
     }
 
     @Override
     public void terminar() {
-        try {
-            if (conexion != null && !conexion.isClosed()) {
-                conexion.close();
-                System.out.println("Conexión MySQL (Clientes) cerrada.");
-            }
-        } catch (SQLException e) {
-            System.err.println("Error al cerrar conexión MySQL: " + e.getMessage());
-        }
+        MySQL.cerrarConexion();
     }
 
     @Override
@@ -95,14 +74,12 @@ public class Clientes implements IClientes {
             throw new NullPointerException("No se puede modificar un cliente nulo.");
         }
 
-        // Verificamos si existe primero
         if (buscar(cliente) == null) {
             throw new TallerMecanicoExcepcion("El cliente no existe.");
         }
 
         String sql = "UPDATE clientes SET nombre = ?, telefono = ? WHERE dni = ?";
         try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
-            // Usamos los nuevos valores si no son nulos, o los existentes del objeto cliente
             String nuevoNombre = (nombre != null) ? nombre : cliente.getNombre();
             String nuevoTelefono = (telefono != null) ? telefono : cliente.getTelefono();
 
@@ -141,7 +118,6 @@ public class Clientes implements IClientes {
             throw new NullPointerException("No se puede borrar un cliente nulo.");
         }
 
-        // REQUERIMIENTO: Impedir borrado si existe trabajo
         String sqlCheck = "SELECT count(*) FROM trabajos WHERE cliente_dni = ?";
         try (PreparedStatement stmt = conexion.prepareStatement(sqlCheck)) {
             stmt.setString(1, cliente.getDni());

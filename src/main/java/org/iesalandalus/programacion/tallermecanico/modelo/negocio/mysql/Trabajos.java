@@ -16,11 +16,6 @@ public class Trabajos implements ITrabajos {
     private static Trabajos instancia;
     private Connection conexion;
 
-    // Cambia la línea de la URL por esta:
-    private static final String URL = "jdbc:mysql://3.235.161.27:3306/tallermecanico";
-    private static final String USER = "root";
-    private static final String PASS = "amcciclista";
-
     private Trabajos() {}
 
     public static Trabajos getInstancia() {
@@ -30,23 +25,12 @@ public class Trabajos implements ITrabajos {
 
     @Override
     public void comenzar() {
-        try {
-            if (conexion == null || conexion.isClosed()) {
-                conexion = DriverManager.getConnection(URL, USER, PASS);
-                System.out.println("Conexión MySQL (Trabajos) establecida.");
-            }
-        } catch (SQLException e) {
-            System.err.println("Error conexión MySQL Trabajos: " + e.getMessage());
-        }
+        this.conexion = MySQL.establecerConexion();
     }
 
     @Override
     public void terminar() {
-        try {
-            if (conexion != null && !conexion.isClosed()) conexion.close();
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-        }
+        MySQL.cerrarConexion();
     }
 
     @Override
@@ -70,7 +54,6 @@ public class Trabajos implements ITrabajos {
         String matricula = rs.getString("vehiculo_matricula");
 
         Cliente c = Clientes.getInstancia().buscar(new Cliente("Dummy", dni, "000000000"));
-        // Creamos un vehículo dummy para buscar. El constructor del record requiere 3 argumentos.
         Vehiculo v = Vehiculos.getInstancia().buscar(new Vehiculo("Marca", "Modelo", matricula));
 
         LocalDate fechaInicio = rs.getDate("fecha_inicio").toLocalDate();
@@ -117,7 +100,6 @@ public class Trabajos implements ITrabajos {
         List<Trabajo> trabajos = new ArrayList<>();
         String sql = "SELECT * FROM trabajos WHERE vehiculo_matricula = ?";
         try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
-            // CORRECCIÓN: vehiculo.matricula() en lugar de getMatricula()
             stmt.setString(1, vehiculo.matricula());
             ResultSet rs = stmt.executeQuery();
             while(rs.next()) trabajos.add(mapearTrabajo(rs));
@@ -133,7 +115,6 @@ public class Trabajos implements ITrabajos {
 
         try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
             stmt.setString(1, trabajo.getCliente().getDni());
-            // CORRECCIÓN: trabajo.getVehiculo().matricula()
             stmt.setString(2, trabajo.getVehiculo().matricula());
             stmt.setDate(3, Date.valueOf(trabajo.getFechaInicio()));
 
@@ -164,7 +145,6 @@ public class Trabajos implements ITrabajos {
         String sql = "SELECT * FROM trabajos WHERE cliente_dni=? AND vehiculo_matricula=? AND fecha_inicio=?";
         try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
             stmt.setString(1, trabajo.getCliente().getDni());
-            // CORRECCIÓN: trabajo.getVehiculo().matricula()
             stmt.setString(2, trabajo.getVehiculo().matricula());
             stmt.setDate(3, Date.valueOf(trabajo.getFechaInicio()));
             try(ResultSet rs = stmt.executeQuery()) {
@@ -180,7 +160,6 @@ public class Trabajos implements ITrabajos {
         String sql = "DELETE FROM trabajos WHERE cliente_dni=? AND vehiculo_matricula=? AND fecha_inicio=?";
         try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
             stmt.setString(1, trabajo.getCliente().getDni());
-            // CORRECCIÓN: trabajo.getVehiculo().matricula()
             stmt.setString(2, trabajo.getVehiculo().matricula());
             stmt.setDate(3, Date.valueOf(trabajo.getFechaInicio()));
             if (stmt.executeUpdate() == 0) throw new TallerMecanicoExcepcion("El trabajo no existe.");
@@ -217,7 +196,6 @@ public class Trabajos implements ITrabajos {
             stmt.setFloat(2, (trabajo instanceof Mecanico) ? ((Mecanico) trabajo).getPrecioMaterial() : 0);
             stmt.setDate(3, trabajo.getFechaFin() != null ? Date.valueOf(trabajo.getFechaFin()) : null);
             stmt.setString(4, trabajo.getCliente().getDni());
-            // CORRECCIÓN: trabajo.getVehiculo().matricula()
             stmt.setString(5, trabajo.getVehiculo().matricula());
             stmt.setDate(6, Date.valueOf(trabajo.getFechaInicio()));
             stmt.executeUpdate();

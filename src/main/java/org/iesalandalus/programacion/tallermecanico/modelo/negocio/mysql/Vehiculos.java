@@ -13,10 +13,6 @@ public class Vehiculos implements IVehiculos {
     private static Vehiculos instancia;
     private Connection conexion;
 
-    private static final String URL = "jdbc:mysql://3.235.161.27:3306/tallermecanico";
-    private static final String USER = "root";
-    private static final String PASS = "amcciclista";
-
     private Vehiculos() {}
 
     public static Vehiculos getInstancia() {
@@ -26,23 +22,12 @@ public class Vehiculos implements IVehiculos {
 
     @Override
     public void comenzar() {
-        try {
-            if (conexion == null || conexion.isClosed()) {
-                conexion = DriverManager.getConnection(URL, USER, PASS);
-                System.out.println("Conexión MySQL (Vehículos) establecida.");
-            }
-        } catch (SQLException e) {
-            System.err.println("Error conexión MySQL Vehículos: " + e.getMessage());
-        }
+        this.conexion = MySQL.establecerConexion();
     }
 
     @Override
     public void terminar() {
-        try {
-            if (conexion != null && !conexion.isClosed()) conexion.close();
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
-        }
+        MySQL.cerrarConexion();
     }
 
     @Override
@@ -63,7 +48,6 @@ public class Vehiculos implements IVehiculos {
     @Override
     public void insertar(Vehiculo vehiculo) throws TallerMecanicoExcepcion {
         if (vehiculo == null) throw new NullPointerException("No se puede insertar un vehículo nulo.");
-
         String sql = "INSERT INTO vehiculos (marca, modelo, matricula) VALUES (?, ?, ?)";
         try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
             stmt.setString(1, vehiculo.marca());
@@ -80,7 +64,6 @@ public class Vehiculos implements IVehiculos {
     @Override
     public Vehiculo buscar(Vehiculo vehiculo) {
         if (vehiculo == null) return null;
-
         String sql = "SELECT marca, modelo, matricula FROM vehiculos WHERE matricula = ?";
         try (PreparedStatement stmt = conexion.prepareStatement(sql)) {
             stmt.setString(1, vehiculo.matricula());
