@@ -75,7 +75,7 @@ public class ModeloCascada implements Modelo {
     }
 
     @Override
-    public Trabajo buscar(Trabajo trabajo) {
+    public Trabajo buscar(Trabajo trabajo) throws TallerMecanicoExcepcion {
         trabajo = Objects.requireNonNull(trabajos.buscar(trabajo), "No existe un trabajo igual.");
         return Trabajo.copiar(trabajo);
     }
@@ -138,7 +138,7 @@ public class ModeloCascada implements Modelo {
     }
 
     @Override
-    public List<Trabajo> getTrabajos() {
+    public List<Trabajo> getTrabajos() throws TallerMecanicoExcepcion {
         List<Trabajo> copiaTrabajos = new ArrayList<>();
         for (Trabajo trabajo : trabajos.get()) {
             copiaTrabajos.add(Trabajo.copiar(trabajo));
@@ -147,7 +147,7 @@ public class ModeloCascada implements Modelo {
     }
 
     @Override
-    public List<Trabajo> getTrabajos(Cliente cliente) {
+    public List<Trabajo> getTrabajos(Cliente cliente) throws TallerMecanicoExcepcion {
         List<Trabajo> trabajosCliente = new ArrayList<>();
         for (Trabajo trabajo : trabajos.get(cliente)) {
             trabajosCliente.add(Trabajo.copiar(trabajo));
@@ -156,7 +156,7 @@ public class ModeloCascada implements Modelo {
     }
 
     @Override
-    public List<Trabajo> getTrabajos(Vehiculo vehiculo) {
+    public List<Trabajo> getTrabajos(Vehiculo vehiculo) throws TallerMecanicoExcepcion {
         List<Trabajo> trabajosCliente = new ArrayList<>();
         for (Trabajo trabajo : trabajos.get(vehiculo)) {
             trabajosCliente.add(Trabajo.copiar(trabajo));
@@ -165,7 +165,7 @@ public class ModeloCascada implements Modelo {
     }
 
     @Override
-    public Map<TipoTrabajo, Integer> getEstadisticasMensuales(LocalDate mes) {
+    public Map<TipoTrabajo, Integer> getEstadisticasMensuales(LocalDate mes) throws TallerMecanicoExcepcion {
         return trabajos.getEstadisticasMensuales(mes);
     }
 

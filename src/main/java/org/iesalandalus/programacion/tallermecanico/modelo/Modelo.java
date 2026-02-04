@@ -24,7 +24,7 @@ public interface Modelo {
 
     Vehiculo buscar(Vehiculo vehiculo);
 
-    Trabajo buscar(Trabajo trabajo);
+    Trabajo buscar(Trabajo trabajo) throws TallerMecanicoExcepcion;
 
     Cliente modificar(Cliente cliente, String nombre, String telefono) throws TallerMecanicoExcepcion;
 
@@ -44,11 +44,11 @@ public interface Modelo {
 
     List<Vehiculo> getVehiculos();
 
-    List<Trabajo> getTrabajos();
+    List<Trabajo> getTrabajos() throws TallerMecanicoExcepcion;
 
-    List<Trabajo> getTrabajos(Cliente cliente);
+    List<Trabajo> getTrabajos(Cliente cliente) throws TallerMecanicoExcepcion;
 
-    List<Trabajo> getTrabajos(Vehiculo vehiculo);
+    List<Trabajo> getTrabajos(Vehiculo vehiculo) throws TallerMecanicoExcepcion;
 
-    Map<TipoTrabajo, Integer> getEstadisticasMensuales(LocalDate mes);
+    Map<TipoTrabajo, Integer> getEstadisticasMensuales(LocalDate mes) throws TallerMecanicoExcepcion;
 }

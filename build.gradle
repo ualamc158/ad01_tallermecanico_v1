@@ -32,7 +32,10 @@ dependencies {
     // MySQL
     implementation 'com.mysql:mysql-connector-j:9.1.0'
     //MongoDb
-    implementation 'org.mongodb:mongodb-driver-sync:4.4.2'
+    implementation 'org.mongodb:mongodb-driver-sync:4.11.1'
+    // SLF4J
+    implementation 'org.slf4j:slf4j-api:1.7.36'
+    implementation 'org.slf4j:slf4j-simple:1.7.36'
 }
 
 test {

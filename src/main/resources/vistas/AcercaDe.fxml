@@ -6,7 +6,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="450.0" spacing="20.0" stylesheets="@../estilos/ventanas.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.iesalandalus.programacion.tallermecanico.vista.ventanas.controladores.AcercaDe">
+<VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="450.0" spacing="20.0" stylesheets="@../estilos/ventanas.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.iesalandalus.programacion.tallermecanico.vista.ventanas.controladores.AcercaDe">
    <children>
       <ImageView fitHeight="300.0" fitWidth="300.0" pickOnBounds="true" preserveRatio="true">
          <image>
@@ -15,7 +15,7 @@
       </ImageView>
       <Label style="-fx-font: 25 Arial;" text="Módulo Programación - JavaFX" />
       <Label style="-fx-font: 20 Arial;" text="Gestión de un Taller Mecánico" />
-      <Label style="-fx-font: 20 Arial;" text="José Ramón Jiménez Reyes" />
+      <Label style="-fx-font: 20 Arial;" text="Alberto Martínez Cánovas" />
    </children>
    <padding>
       <Insets left="20.0" right="20.0" top="20.0" />
