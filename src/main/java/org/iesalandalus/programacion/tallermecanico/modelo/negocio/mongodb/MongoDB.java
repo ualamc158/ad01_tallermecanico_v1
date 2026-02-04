@@ -40,7 +40,7 @@ public class MongoDB {
         }
     }
 
-    private static void cerrarConexion(){
+    public static void cerrarConexion(){
         if (conexion != null) {
             try {
                 conexion.close();
