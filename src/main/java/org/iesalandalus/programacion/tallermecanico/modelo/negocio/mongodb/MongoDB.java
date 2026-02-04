@@ -33,7 +33,6 @@ public class MongoDB {
             if (conexion == null) {
                 String uri = "mongodb+srv://" + USUARIO + ":" + CONTRASENA + SERVIDOR;
                 conexion = MongoClients.create(uri);
-//                String connectionString = "mongodb+srv://taller:taller-2025@cluster0.j8dda1e.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
                 System.out.println("Conexión a MongoDB establecida.");
             }
         } catch (Exception e) {

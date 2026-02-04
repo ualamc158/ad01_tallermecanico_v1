@@ -3,6 +3,8 @@ package org.iesalandalus.programacion.tallermecanico.modelo.negocio.mongodb;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoException;
+import com.mongodb.ServerApi;
+import com.mongodb.ServerApiVersion;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
@@ -10,13 +12,15 @@ import org.bson.Document;
 
 public class MongoClientConnectionExample {
     public static void main(String[] args) {
-        // Si recibes errores SSL, asegúrate de que tu IP está en la Whitelist de MongoDB Atlas.
-        // Network Access -> Add IP Address -> Add Current IP Address
-        
-        String connectionString = "mongodb+srv://taller:taller-2025@cluster0.j8dda1e.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+        String connectionString = "mongodb+srv://taller:taller-2025@cluster0.j8dda1e.mongodb.net/?appName=Cluster0";
+
+        ServerApi serverApi = ServerApi.builder()
+                .version(ServerApiVersion.V1)
+                .build();
 
         MongoClientSettings settings = MongoClientSettings.builder()
                 .applyConnectionString(new ConnectionString(connectionString))
+                .serverApi(serverApi)
                 .build();
 
         // Create a new client and connect to the server
