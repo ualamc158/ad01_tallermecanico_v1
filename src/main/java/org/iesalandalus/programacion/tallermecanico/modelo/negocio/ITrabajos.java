@@ -12,13 +12,13 @@ public interface ITrabajos {
 
     void terminar();
 
-    List<Trabajo> get();
+    List<Trabajo> get() throws TallerMecanicoExcepcion;
 
-    List<Trabajo> get(Cliente cliente);
+    List<Trabajo> get(Cliente cliente) throws TallerMecanicoExcepcion;
 
-    List<Trabajo> get(Vehiculo vehiculo);
+    List<Trabajo> get(Vehiculo vehiculo) throws TallerMecanicoExcepcion;
 
-    Map<TipoTrabajo, Integer> getEstadisticasMensuales(LocalDate mes);
+    Map<TipoTrabajo, Integer> getEstadisticasMensuales(LocalDate mes) throws TallerMecanicoExcepcion;
 
     void insertar(Trabajo trabajo) throws TallerMecanicoExcepcion;
 
@@ -28,7 +28,7 @@ public interface ITrabajos {
 
     Trabajo cerrar(Trabajo trabajo, LocalDate fechaFin) throws TallerMecanicoExcepcion;
 
-    Trabajo buscar(Trabajo trabajo);
+    Trabajo buscar(Trabajo trabajo) throws TallerMecanicoExcepcion;
 
     void borrar(Trabajo trabajo) throws TallerMecanicoExcepcion;
 }
